@@ -1,0 +1,136 @@
+{% extends "header.html" %}
+
+{% block body %}
+
+    <div class="container-fluid">
+      <div class="row">
+		<div class="col-md-2">
+			<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+			  <div class="sidebar-sticky">
+				<ul class="nav flex-column">
+				  <li class="nav-item">
+					<a class="nav-link active" href="#">
+					  <span data-feather="home"></span>
+					  Dashboard <span class="sr-only">(current)</span>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">
+					  <span data-feather="file"></span>
+					  Orders
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">
+					  <span data-feather="shopping-cart"></span>
+					  Products
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">
+					  <span data-feather="users"></span>
+					  Customers
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">
+					  <span data-feather="bar-chart-2"></span>
+					  Reports
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">
+					  <span data-feather="layers"></span>
+					  Integrations
+					</a>
+				  </li>
+				</ul>
+
+				<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+				  <span>Saved reports</span>
+				  <a class="d-flex align-items-center text-muted" href="#">
+					<span data-feather="plus-circle"></span>
+				  </a>
+				</h6>
+				<ul class="nav flex-column mb-2">
+					{% for i in TOPIC_DICT["Basics"] %}
+					  <li class="nav-item">
+						<a class="nav-link" href="{{i[1]}}">
+						  <span data-feather="{{i[2]}}"></span>
+						  {{i[0]}}
+						</a>
+					  </li>
+					{% endfor%}
+				</ul>
+			  </div>
+			</nav>		
+		</div>
+		<div class="col-md-10" id="myDiv" width="1522" height="642" style="display: block; height: 514px; width: 1218px;"></div>
+      </div>
+    </div>
+	
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script>
+	Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv', function(err, rows){
+      
+	function unpack(rows, key) {
+	  return rows.map(function(row) { 
+		return row[key]; 
+	  });
+	}
+	var trace = {
+	  x: unpack(rows, 'Date'), 
+	  close: unpack(rows, 'AAPL.Close'), 
+	  high: unpack(rows, 'AAPL.High'),  
+	  low: unpack(rows, 'AAPL.Low'), 
+	  open: unpack(rows, 'AAPL.Open'),
+
+	  // cutomise colors 
+	  increasing: {line: {color: 'black'}},
+	  decreasing: {line: {color: 'red'}},
+		
+	  type: 'candlestick', 
+	  xaxis: 'x', 
+	  yaxis: 'y'
+	};
+
+	var data = [trace];
+	  
+	var layout = {
+	  dragmode: 'zoom', 
+	  showlegend: false, 
+	  xaxis: {
+		autorange: true, 
+		title: 'Date',
+		 rangeselector: {
+			x: 0,
+			y: 1.2,
+			xanchor: 'left',
+			font: {size:8},
+			buttons: [{
+				step: 'month',
+				stepmode: 'backward',
+				count: 1,
+				label: '1 month'
+			}, {
+				step: 'month',
+				stepmode: 'backward',
+				count: 6,
+				label: '6 months'
+			}, {
+				step: 'all',
+				label: 'All dates'
+			}]
+		  }
+	  }, 
+	  yaxis: {
+		autorange: true, 
+	  }
+	};
+
+	Plotly.plot('myDiv', data, layout); 
+	});
+	</script>
+
+ 
+{% endblock %} 
